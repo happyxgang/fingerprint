@@ -1,51 +1,22 @@
-function [match_hash] = xzg_get_same_hash(L, L2)
-
-if nargin < 2
-   D = wavread('/home/kevin/record/34.wav');
-   L = find_landmarks(D,8000);
-   D2 = wavread('/home/kevin/record/34-70record.wav');
-   L2 = find_landmarks(D2,8000);
-end
-time_count = zeros(size(L,1));
-for i =1:size(L2,1);
-    hash_record = L2(i,:);
-    time_record = hash_record(1);
-    for j=1:size(L,1);
-        hash_origin = L(j,:);
-        time_origin = hash_origin(1);
-        time_diff = time_origin-time_record;
-        if(time_diff > 0)
-            if(hash_record(2:end) == hash_origin(2:end))
-                time_count(time_diff) = time_count(time_origin-time_record) + 1;
-                break
-            end
-        end
-    end
-end
-
-max_hash = 0;
-max_hash_time = 0;
-for i = 1:size(time_count);
-    if (time_count(i) > max_hash)
-        max_hash = time_count(i);
-        max_hash_time = i;
-    end
-end
+function [match_hash,one_differ] = xzg_get_same_hash(L, L2)
+L2_hashes = L2(:,2:end);
 match_hash = [];
-for i = 1:size(L2,1);
-    hash_record = L2(i,:);
-    time_record = hash_record(1);
-    for j = 1:size(L,1);
-        hash_origin = L(j,:);
-        time_origin = hash_origin(1);
-        time_diff = (time_origin - time_record);
-        if (time_diff == max_hash_time)
-            if( hash_record(2:end) == hash_origin(2:end))
-                match_hash = [match_hash;hash_record];
-            end
-            break
-        end
+one_differ = [];
+for i =1: size(L,1)
+    L_hash = L(i,2:end);
+    b = ismember(L_hash,L2_hashes,'rows');
+    if b
+        match_hash = [match_hash;L(i,:)];
+    end
+    f1_add_1 = L_hash + [1 0 0];
+    f2_add_1 = L_hash + [0 1 0];
+    f1_sub_1 = L_hash + [-1 0 0 ];
+    f2_sub_1 = L_hash + [0 -1 0];
+    hash_one_diff =[f1_add_1;f2_add_1;f1_sub_1;f2_sub_1];
+    s = intersect(hash_one_diff,L2_hashes,'rows');
+    counts = size(s,1);
+    if counts > 0
+        one_differ =[one_differ;L(i,:)];
     end
 end
-
 end

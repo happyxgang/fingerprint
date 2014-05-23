@@ -139,29 +139,29 @@ for i = 1:size(S,2)-1
 end
 
 % 重新从后面后向提取峰值点，只保留下前后向均能提取的峰值点
-% maxes2 = [];
-% nmaxes2 = 0;
-% whichmax = nmaxes;
-% sthresh = s_sup*spread(S(:,end),f_sd)';
-% for i = (size(S,2)-1):-1:1
-%   while whichmax > 0 && maxes(1,whichmax) == i
-%     p = maxes(2,whichmax);
-%     v = maxes(3,whichmax);
-%     if  v >= sthresh(p)
-%       nmaxes2 = nmaxes2 + 1;
-%       maxes2(:,nmaxes2) = [i;p];
-%       eww = exp(-0.5*(([1:length(sthresh)]'- p)/f_sd).^2);
-%       sthresh = max(sthresh, v*s_sup*eww);
-%     end
-%     whichmax = whichmax - 1;
-%   end
-%   sthresh = a_dec*sthresh;
-% end
-% 
-% maxes2 = fliplr(maxes2);
-nmaxes2=nmaxes;
-%% 整理峰值点形成显著点对，以作为音频哈希
-  maxes2 = maxes;
+maxes2 = [];
+nmaxes2 = 0;
+whichmax = nmaxes;
+sthresh = s_sup*spread(S(:,end),f_sd)';
+for i = (size(S,2)-1):-1:1
+  while whichmax > 0 && maxes(1,whichmax) == i
+    p = maxes(2,whichmax);
+    v = maxes(3,whichmax);
+    if  v >= sthresh(p)
+      nmaxes2 = nmaxes2 + 1;
+      maxes2(:,nmaxes2) = [i;p];
+      eww = exp(-0.5*(([1:length(sthresh)]'- p)/f_sd).^2);
+      sthresh = max(sthresh, v*s_sup*eww);
+    end
+    whichmax = whichmax - 1;
+  end
+  sthresh = a_dec*sthresh;
+end
+
+maxes2 = fliplr(maxes2);
+% nmaxes2=nmaxes;
+% %% 整理峰值点形成显著点对，以作为音频哈希
+%   maxes2 = maxes;
 % 设定每个点最大允许点对数目
 maxpairsperpeak=3;
 

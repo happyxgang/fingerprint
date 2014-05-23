@@ -4,7 +4,7 @@ if nargin < 4
   T = [];
 end
 if nargin < 5
-  C = 'o-r';
+  C = 'o-m';
 end
 if nargin < 2
 
@@ -13,14 +13,17 @@ if nargin < 2
 %    D = D';
 %    L = csvread('/home/kevin/Desktop/landmarks');
 %    L = L-1;
-   D_origin = wavread('/home/kevin/Documents/34_origin.wav');
-   L_origin = find_landmarks(D_origin,8000);
+   D_origin = wavread('/home/kevin/Documents/amazing_long.wav');
+   L_origin =csvread('/home/kevin/Desktop/landmarks_amazing_long');
    
-   D = wavread('/home/kevin/Documents/record/34-20record.wav');
-   L = find_landmarks(D,8000);
+   D = audioread('/home/kevin/Documents/ders.wav');
+ 	L = find_landmarks(D,8000);
    
-   D2 = wavread('/home/kevin/Documents/record/34-70record.wav');
-   L2 = find_landmarks(D2,8000);
+   D2 = audioread('/home/kevin/Documents/ders.wav');
+   L2 = csvread('/home/kevin/Desktop/landmarks_ders_nbp');
+
+   %L2 = find_landmarks(D2,8000);
+
 end
 
 targetSR = 8000;
@@ -55,7 +58,9 @@ subplot(2,1,1),
 end
   
 hold on
-L = xzg_get_same_hash(L_origin, L);
+%L = xzg_get_same_hash(L, L_origin);
+
+
 for i = 1:size(L,1);
   lrow = L(i,:);
   t1q = lrow(1);
@@ -88,7 +93,8 @@ if length(D) > 0
 end
   
 hold on
-L2 = xzg_get_same_hash(L_origin,L2);
+%L2 = xzg_get_same_hash(L2, L_origin);
+
 for i = 1:size(L2,1);
   lrow = L2(i,:);
   t1q = lrow(1);
